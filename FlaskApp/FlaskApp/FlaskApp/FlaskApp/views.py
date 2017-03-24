@@ -35,3 +35,6 @@ def about():
         year=datetime.now().year,
         message='Your application description page.'
     )
+
+def reccPage():
+    return('none.html')
