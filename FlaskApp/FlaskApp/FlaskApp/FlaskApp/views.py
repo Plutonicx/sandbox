@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import Flask, render_template, json, request
+from flask import Flask, render_template, json, request, session, redirect
 from FlaskApp import app
 from flask.ext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
@@ -74,6 +74,41 @@ def signUp():
     else:
         return json.dumps({'error':str(data[0])})
 
+
+@app.route('/showSignin')
+def showSignin():
+    return render_template('signin.html')
+
+@app.route('/validateLogin',methods=['POST'])
+def validateLogin():
+    try:
+        _username = request.form['inputEmail']
+        _password = request.form['inputPassword']
+
+        con = mysql.connect()
+        cursor = con.cursor()
+        cursor.callproc('sp_validateLogin',(_username,))
+        data = cursor.fetchall()
+
+        if len(data) > 0:
+                if check_password_hash(str(data[0][3]),_password):
+                    session['user'] = data[0][0]
+                    return redirect('/userHome')
+                else:
+                    return render_template('error.html',error = 'Wrong Email address or Password.')
+        else:
+            return render_template('error.html',error = 'Wrong Email address or Password.')
+
+    except Exception as e:
+        return render_template('error.html',error = str(e))
+
+    finally:
+        cursor.close()
+        con.close()
+
+@app.route('/userHome')
+def userHome():
+    return render_template('userHome.html')
 
 def reccPage():
     return('none.html')
