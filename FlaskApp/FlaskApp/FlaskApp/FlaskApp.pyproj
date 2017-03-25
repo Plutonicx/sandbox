@@ -41,6 +41,9 @@
     <Folder Include="FlaskApp\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FlaskApp\static\content\signup.css" />
+    <Content Include="FlaskApp\static\scripts\jquery-3.2.0.min.js" />
+    <Content Include="FlaskApp\templates\signup.html" />
     <Content Include="requirements.txt" />
     <Content Include="FlaskApp\static\content\bootstrap.css" />
     <Content Include="FlaskApp\static\content\bootstrap.min.css" />
