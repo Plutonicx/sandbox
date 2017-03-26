@@ -10,6 +10,8 @@ from werkzeug import generate_password_hash, check_password_hash
 
 mysql = MySQL()
  
+app.secret_key = 'why would I tell you my secret key?'
+
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '2698'
@@ -108,7 +110,16 @@ def validateLogin():
 
 @app.route('/userHome')
 def userHome():
-    return render_template('userHome.html')
+    if session.get('user'):
+        return render_template('userHome.html')
+    else:
+        return render_template('error.html',error = 'Unauthorized Access')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user',None)
+    return redirect('/')
 
 def reccPage():
     return('none.html')
