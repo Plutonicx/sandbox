@@ -19,6 +19,8 @@ app.config['MYSQL_DATABASE_DB'] = 'BucketList'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
+# Default setting
+pageLimit = 2
 
 @app.route('/')
 @app.route('/home')
@@ -154,11 +156,14 @@ def addWish():
         conn.close()
 
 
-@app.route('/getWish')
+@app.route('/getWish',methods=['POST'])
 def getWish():
     try:
         if session.get('user'):
             _user = session.get('user')
+
+            _limit = pageLimit
+            _offset = request.form['offset']
 
             # Connect to MySQL and fetch data
             con = mysql.connect()

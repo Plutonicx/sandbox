@@ -37,24 +37,24 @@
 		        });
 		        });
 	        });
-	        function GetWishes(){
-		        $.ajax({
-			        url : '/getWish',
-			        type : 'GET',
-			        success: function(res){
+	        function GetWishes() {
+	            $.ajax({
+	                url: '/getWish',
+	                type: 'POST',
+	                data: {
+	                    offset: 0
+	                },
+	                success: function (res) {
 
+	                    var wishObj = JSON.parse(res);
+	                    $('#ulist').empty();
+	                    $('#listTemplate').tmpl(wishObj).appendTo('#ulist');
 
-
-
-				        var wishObj = JSON.parse(res);
-				        $('#ulist').empty();
-				        $('#listTemplate').tmpl(wishObj).appendTo('#ulist');
-
-			        },
-			        error: function(error){
-				        console.log(error);
-			        }
-		        });
+	                },
+	                error: function (error) {
+	                    console.log(error);
+	                }
+	            });
 	        }
 	        function ConfirmDelete(elem){
 		        localStorage.setItem('deleteId',$(elem).attr('data-id'));
@@ -156,6 +156,35 @@
                 <div class="panel-body">
 
                     <ul id="ulist" class="list-group"></ul>
+                    <nav>
+                        <ul class="pagination">
+                            <li>
+                                <a href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">1</a>
+                            </li>
+                            <li>
+                                <a href="#">2</a>
+                            </li>
+                            <li>
+                                <a href="#">3</a>
+                            </li>
+                            <li>
+                                <a href="#">4</a>
+                            </li>
+                            <li>
+                                <a href="#">5</a>
+                            </li>
+                            <li>
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
 
             </div>
