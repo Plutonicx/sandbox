@@ -37,12 +37,17 @@
     <Folder Include="FlaskApp\static\" />
     <Folder Include="FlaskApp\static\content\" />
     <Folder Include="FlaskApp\static\fonts\" />
+    <Folder Include="FlaskApp\static\Uploads\" />
     <Folder Include="FlaskApp\static\scripts\" />
     <Folder Include="FlaskApp\templates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FlaskApp\static\content\signup.css" />
     <Content Include="FlaskApp\static\scripts\jquery-3.2.0.min.js" />
+    <Content Include="FlaskApp\static\scripts\jquery.fileupload-process.js" />
+    <Content Include="FlaskApp\static\scripts\jquery.fileupload-ui.js" />
+    <Content Include="FlaskApp\static\scripts\jquery.fileupload.js" />
+    <Content Include="FlaskApp\static\scripts\jquery.ui.widget.js" />
     <Content Include="FlaskApp\templates\addWish.html" />
     <Content Include="FlaskApp\templates\error.html" />
     <Content Include="FlaskApp\templates\signin.html" />

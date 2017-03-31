@@ -10,6 +10,38 @@
     <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
 
     <script src="/static/scripts/jquery-3.2.0.min.js"></script>
+
+    <script src="/static/scripts/jquery.ui.widget.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload-process.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload-ui.js"></script>
+
+    <script>
+		$(function(){
+			    $('#fileupload').fileupload({
+        			url: 'upload',
+        			dataType: 'json',
+        			add: function (e, data) {
+        				data.submit();
+        			},
+			        success:function(response,status) {
+					console.log(response.filename);
+					var filePath = 'static/Uploads/' + response.filename;
+					$('#imgUpload').attr('src', '/static/Uploads/' + response.filename);
+					$('#filePath').val(filePath);
+					console.log('success');
+					
+			        },
+			        error:function(error){
+			        	console.log(error);
+			        }
+    			});
+		})
+    </script>
+
     <style>
         .btn-file {
             position: relative;
@@ -84,7 +116,10 @@
                             Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
                         </span>
                     </span>
-                    <input type="text" class="form-control" readonly>
+                    <!--<input type="text" class="form-control" readonly>-->
+                    <div class="pull-right">
+                        <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail">
+                    </div>
                 </div>
 
             </div>

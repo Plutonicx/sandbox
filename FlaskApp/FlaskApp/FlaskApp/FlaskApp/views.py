@@ -7,6 +7,8 @@ from flask import Flask, render_template, json, request, session, redirect
 from FlaskApp import app
 from flask.ext.mysql import MySQL
 from werkzeug import generate_password_hash, check_password_hash
+import os
+import uuid
 
 mysql = MySQL()
  
@@ -17,6 +19,8 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = '2698'
 app.config['MYSQL_DATABASE_DB'] = 'BucketList'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['UPLOAD_FOLDER'] = 'C:\\Users\\Stoja\\Documents\\.Repositories\\sandbox\\FlaskApp\\FlaskApp\\FlaskApp\\FlaskApp\\static\\Uploads\\'
+# in the future use os.getcwd() to specify base location.
 mysql.init_app(app)
 
 # Default setting
@@ -272,3 +276,15 @@ def deleteWish():
     finally:
         cursor.close()
         conn.close()
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    # file upload handler code will be here
+    if request.method == 'POST':
+        file = request.files['file']
+        extension = os.path.splitext(file.filename)[1]
+
+        f_name = str(uuid.uuid4()) + extension
+
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_name))
+        return json.dumps({'filename':f_name})
