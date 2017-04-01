@@ -168,3 +168,140 @@ BEGIN
 END$$
  
 DELIMITER ;
+
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_GetWishByUser`;
+ 
+DELIMITER $$
+USE `BucketList`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetWishByUser`(
+IN p_user_id bigint,
+IN p_limit int,
+IN p_offset int,
+out p_total bigint
+)
+BEGIN
+     
+    select count(*) into p_total from tbl_wish where wish_user_id = p_user_id;
+ 
+    SET @t1 = CONCAT( 'select * from tbl_wish where wish_user_id = ', p_user_id, ' order by wish_date desc limit ',p_limit,' offset ',p_offset);
+    PREPARE stmt FROM @t1;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END$$
+ 
+DELIMITER ;
+
+
+
+ALTER TABLE `BucketList`.`tbl_wish` 
+ADD COLUMN `wish_file_path` VARCHAR(400) NULL AFTER `wish_date`,
+ADD COLUMN `wish_accomplished` INT NULL DEFAULT 0 AFTER `wish_file_path`,
+ADD COLUMN `wish_private` INT NULL DEFAULT 0 AFTER `wish_accomplished`;
+
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_addWish`;
+ 
+DELIMITER $$
+USE `BucketList`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addWish`(
+    IN p_title varchar(45),
+    IN p_description varchar(4000),
+    IN p_user_id bigint,
+    IN p_file_path varchar(400),
+    IN p_is_private int,
+    IN p_is_done int
+)
+BEGIN
+    insert into tbl_wish(
+        wish_title,
+        wish_description,
+        wish_user_id,
+        wish_date,
+        wish_file_path,
+        wish_private,
+        wish_accomplished
+    )
+    values
+    (
+        p_title,
+        p_description,
+        p_user_id,
+        NOW(),
+        p_file_path,
+        p_is_private,
+        p_is_done
+    );
+END$$
+ 
+DELIMITER ;
+
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_updateWish`;
+ 
+DELIMITER $$
+USE `BucketList`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updateWish`(
+IN p_title varchar(45),
+IN p_description varchar(4000),
+IN p_wish_id bigint,
+In p_user_id bigint,
+IN p_file_path varchar(400),
+IN p_is_private int,
+IN p_is_done int
+)
+BEGIN
+update tbl_wish set
+    wish_title = p_title,
+    wish_description = p_description,
+    wish_file_path = p_file_path,
+    wish_private = p_is_private,
+    wish_accomplished = p_is_done
+    where wish_id = p_wish_id and wish_user_id = p_user_id;
+END$$
+ 
+DELIMITER ;
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_GetWishById`;
+
+DELIMITER $$
+USE `BucketList`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetWishById`(
+IN p_wish_id bigint,
+In p_user_id bigint
+)
+BEGIN
+	select wish_id,wish_title,wish_description,wish_file_path,wish_private,wish_accomplished from tbl_wish where wish_id = p_wish_id and wish_user_id = p_user_id;
+END$$
+
+DELIMITER ;
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_updateWish`;
+
+
+DELIMITER $$
+ 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_updateWish`(
+IN p_title varchar(45),
+IN p_description varchar(4000),
+IN p_wish_id bigint,
+In p_user_id bigint,
+IN p_file_path varchar(400),
+IN p_is_private int,
+IN p_is_done int
+)
+BEGIN
+update tbl_wish set
+    wish_title = p_title,
+    wish_description = p_description,
+    wish_file_path = p_file_path,
+    wish_private = p_is_private,
+    wish_accomplished = p_is_done
+    where wish_id = p_wish_id and wish_user_id = p_user_id;
+END
+

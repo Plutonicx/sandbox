@@ -13,6 +13,64 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+    <script src="/static/scripts/jquery.ui.widget.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload-process.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.fileupload-ui.js"></script>
+
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn-file input[type=file] {
+                position: absolute;
+                top: 0;
+                right: 0;
+                min-width: 100%;
+                min-height: 100%;
+                font-size: 100px;
+                text-align: right;
+                filter: alpha(opacity=0);
+                opacity: 0;
+                outline: none;
+                background: white;
+                cursor: inherit;
+                display: block;
+            }
+    </style>
+    <script src="../static/js/jquery.ui.widget.js"></script>
+
+    <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+
+
+    <script>
+		$(function(){
+			    $('#fileupload').fileupload({
+        			url: 'upload',
+        			dataType: 'json',
+        			add: function (e, data) {
+        				data.submit();
+        			},
+			        success:function(response,status) {
+					console.log(response.filename);
+					var filePath = 'static/Uploads/' + response.filename;
+					$('#imgUpload').attr('src',filePath);
+					$('#filePath').val(filePath);
+			        	console.log('success');
+			        },
+			        error:function(error){
+			        	console.log(error);
+			        }
+    			});
+		})
+    </script>
     <script>
 	$(function(){
 
@@ -20,7 +78,7 @@
 		$('#btnUpdate').click(function(){
 			$.ajax({
 			url : '/updateWish',
-			data : {title:$('#editTitle').val(),description:$('#editDescription').val(),id:localStorage.getItem('editId')},
+			data : {title:$('#editTitle').val(),description:$('#editDescription').val(),id:localStorage.getItem('editId'),filePath:$('#imgUpload').attr('src'),isPrivate:$('#chkPrivate').is(':checked')?1:0,isDone:$('#chkDone').is(':checked')?1:0},
 			type : 'POST',
 			success: function(res){
 
@@ -158,8 +216,16 @@
 			success: function(res){
 
 				var data = JSON.parse(res);
+				console.log(data);
 				$('#editTitle').val(data[0]['Title']);
 				$('#editDescription').val(data[0]['Description']);
+				$('#imgUpload').attr('src',data[0]['FilePath']);
+				if(data[0]['Private']=="1"){
+					$('#chkPrivate').attr('checked','checked');
+				}
+				if(data[0]['Done']=="1"){
+					$('#chkDone').attr('checked','checked');
+				}
 				$('#editModal').modal();
 
 
@@ -195,8 +261,9 @@
         <div class="header">
             <nav>
                 <ul class="nav nav-pills pull-right">
+                    <li role="presentation" class="active"><a href="/userHome">Home</a></li>
                     <li role="presentation"><a href="/showAddWish">Add Wish</a></li>
-                    <li role="presentation" class="active"><a href="/logout">Logout</a></li>
+                    <li role="presentation"><a href="/logout">Logout</a></li>
                 </ul>
             </nav>
             <h3 class="text-muted">Python Flask App</h3>
@@ -219,21 +286,26 @@
 
 
 
+        <div class="well">
+            <div class="row">
+                <div class="col-md-12">
 
-        <div class="row">
-            <div class="col-md-12">
+                    <div class="panel-body">
 
-                <div class="panel-body">
+                        <ul id="ulist" class="list-group"></ul>
+                        <nav>
+                            <ul class="pagination"></ul>
+                        </nav>
+                    </div>
 
-                    <ul id="ulist" class="list-group"></ul>
-                    <nav>
-                        <ul class="pagination"></ul>
-                    </nav>
                 </div>
-
             </div>
         </div>
+        <footer class="footer">
+            <p>&copy; Company 2015</p>
+        </footer>
     </div>
+
 
 
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -252,6 +324,31 @@
                         <div class="form-group">
                             <label for="message-text" class="control-label">Description:</label>
                             <textarea class="form-control" id="editDescription"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtPost">Photos</label>
+
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <span class="btn btn-primary btn-file">
+                                        Browse&hellip; <input type="file" id="fileupload" name="file" multiple>
+                                    </span>
+                                </span>
+                                <div class="pull-right">
+                                    <img id="imgUpload" style="width: 140px; height: 140px;" class="img-thumbnail"><input type="hidden" name="filePath" id="filePath"></input>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mark this as private and not visible to others.</label><br />
+                            <input id="chkPrivate" name="private" type="checkbox"> Mark as Private <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Have you already accomplished this?</label><br />
+                            <input id="chkDone" name="done" type="checkbox"> Mark as Done <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         </div>
                     </form>
                 </div>
@@ -286,9 +383,7 @@
     <input type="hidden" id="hdnEnd" value="5" />
 
 
-    <footer class="footer">
-        <p>&copy; Company 2015</p>
-    </footer>
+
 
     </div>
 
