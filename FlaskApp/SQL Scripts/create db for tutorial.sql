@@ -408,12 +408,14 @@ END$$
 DELIMITER ;
 
 
+USE `BucketList`;
+DROP FUNCTION IF EXISTS `getSum`;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` FUNCTION `getSum`(
     p_wish_id int
 ) RETURNS int(11)
 BEGIN
-    select sum(wish_like) into @sm from tbl_likes where wish_id = p_wish_id;
+    select sum(IFNULL(wish_like,0)) into @sm from tbl_likes where wish_id = p_wish_id;
 RETURN @sm;
 END$$
 DELIMITER ;
@@ -442,4 +444,71 @@ RETURN @myval;
 END$$
 DELIMITER ;
 
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_GetAllWishes`;
+DELIMITER $$
+ 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetAllWishes`(
+    p_user int
+)
+BEGIN
+    select wish_id,wish_title,wish_description,wish_file_path,getSum(wish_id),hasLiked(wish_id,p_user)
+    from tbl_wish where wish_private = 0;
+END
+
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_AddUpdateLikes`;
+DELIMITER $$
+ 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_AddUpdateLikes`(
+    p_wish_id int,
+    p_user_id int,
+    p_like int
+)
+BEGIN
+     
+    if (select exists (select 1 from tbl_likes where wish_id = p_wish_id and user_id = p_user_id)) then
+ 
+         
+        select wish_like into @currentVal from tbl_likes where wish_id = p_wish_id and user_id = p_user_id;
+         
+        if @currentVal = 0 then
+            update tbl_likes set wish_like = 1 where wish_id = p_wish_id and user_id = p_user_id;
+        else
+            update tbl_likes set wish_like = 0 where wish_id = p_wish_id and user_id = p_user_id;
+        end if;
+         
+    else
+         
+        insert into tbl_likes(
+            wish_id,
+            user_id,
+            wish_like
+        )
+        values(
+            p_wish_id,
+            p_user_id,
+            p_like
+        );
+ 
+ 
+    end if;
+END
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_getLikeStatus`(
+    IN p_wish_id int,
+    IN p_user_id int
+)
+BEGIN
+    select getSum(p_wish_id),hasLiked(p_wish_id,p_user_id);
+END$$
+DELIMITER ;
 

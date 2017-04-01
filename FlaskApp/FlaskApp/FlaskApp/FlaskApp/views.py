@@ -315,12 +315,11 @@ def getAllWishes():
     try:
         if session.get('user'):
              
+            _user = session.get('user')
             conn = mysql.connect()
             cursor = conn.cursor()
-            cursor.callproc('sp_GetAllWishes')
+            cursor.callproc('sp_GetAllWishes',(_user,))
             result = cursor.fetchall()
-         
- 
          
             wishes_dict = []
             for wish in result:
@@ -329,7 +328,8 @@ def getAllWishes():
                     'Title': wish[1],
                     'Description': wish[2],
                     'FilePath': wish[3],
-                    'Like':wish[4]}
+                    'Like':wish[4],
+                    'HasLiked':wish[5]}
                 wishes_dict.append(wish_dict)   
  
             return json.dumps(wishes_dict)
@@ -345,19 +345,30 @@ def addUpdateLike():
             _wishId = request.form['wish']
             _like = request.form['like']
             _user = session.get('user')
-            
- 
+           
+
             conn = mysql.connect()
             cursor = conn.cursor()
             cursor.callproc('sp_AddUpdateLikes',(_wishId,_user,_like))
             data = cursor.fetchall()
- 
+            
+
             if len(data) is 0:
                 conn.commit()
-                return json.dumps({'status':'OK'})
+                cursor.close()
+                conn.close()
+
+               
+                conn = mysql.connect()
+                cursor = conn.cursor()
+                cursor.callproc('sp_getLikeStatus',(_wishId,_user))
+                
+                result = cursor.fetchall()		
+
+                return json.dumps({'status':'OK','total':result[0][0],'likeStatus':result[0][1]})
             else:
                 return render_template('error.html',error = 'An error occurred!')
- 
+
         else:
             return render_template('error.html',error = 'Unauthorized Access')
     except Exception as e:

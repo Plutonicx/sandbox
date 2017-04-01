@@ -3,7 +3,7 @@ call bucketlist.sp_createUser('hi', 'there', 'guest');
 select *
 from `BucketList`.`tbl_user`
 
-select *
+select IFNULL(wish_id,0)
 from `BucketList`.`tbl_wish`
 
 
