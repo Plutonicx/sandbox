@@ -49,6 +49,7 @@
     <Content Include="FlaskApp\static\scripts\jquery.fileupload.js" />
     <Content Include="FlaskApp\static\scripts\jquery.ui.widget.js" />
     <Content Include="FlaskApp\templates\addWish.html" />
+    <Content Include="FlaskApp\templates\dashboard.html" />
     <Content Include="FlaskApp\templates\error.html" />
     <Content Include="FlaskApp\templates\signin.html" />
     <Content Include="FlaskApp\templates\signup.html" />

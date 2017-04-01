@@ -305,3 +305,16 @@ update tbl_wish set
     where wish_id = p_wish_id and wish_user_id = p_user_id;
 END
 
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_GetAllWishes`;
+ 
+DELIMITER $$
+USE `BucketList`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetAllWishes`()
+BEGIN
+    select wish_id,wish_title,wish_description,wish_file_path from tbl_wish where wish_private = 0;
+END$$
+ 
+DELIMITER ;
+
