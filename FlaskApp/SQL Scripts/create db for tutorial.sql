@@ -318,3 +318,128 @@ END$$
  
 DELIMITER ;
 
+DELIMITER $$
+USE `BucketList`$$
+CREATE TABLE `BucketList`.`tbl_likes` (
+  `wish_id` INT NOT NULL,
+  `like_id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NULL,
+  `wish_like` INT NULL DEFAULT 0 ,
+  PRIMARY KEY (`like_id`)
+  )
+  ;
+
+DELIMITER $$
+ 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_AddUpdateLikes`(
+    p_wish_id int,
+    p_user_id int,
+    p_like int
+)
+BEGIN
+    if (select exists (select 1 from tbl_likes where wish_id = p_wish_id and user_id = p_user_id)) then
+ 
+        update tbl_likes set wish_like = p_like where wish_id = p_wish_id and user_id = p_user_id;
+         
+    else
+         
+        insert into tbl_likes(
+            wish_id,
+            user_id,
+            wish_like
+        )
+        values(
+            p_wish_id,
+            p_user_id,
+            p_like
+        );
+ 
+    end if;
+END
+
+
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_addWish`;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_addWish`(
+    IN p_title varchar(45),
+    IN p_description varchar(4000),
+    IN p_user_id bigint,
+    IN p_file_path varchar(400),
+    IN p_is_private int,
+    IN p_is_done int
+)
+BEGIN
+    insert into tbl_wish(
+        wish_title,
+        wish_description,
+        wish_user_id,
+        wish_date,
+        wish_file_path,
+        wish_private,
+        wish_accomplished
+    )
+    values
+    (
+        p_title,
+        p_description,
+        p_user_id,
+        NOW(),
+        p_file_path,
+        p_is_private,
+        p_is_done
+    );
+ 
+    SET @last_id = LAST_INSERT_ID();
+    insert into tbl_likes(
+        wish_id,
+        user_id,
+        wish_like
+    )
+    values(
+        @last_id,
+        p_user_id,
+        0
+    );
+     
+ 
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` FUNCTION `getSum`(
+    p_wish_id int
+) RETURNS int(11)
+BEGIN
+    select sum(wish_like) into @sm from tbl_likes where wish_id = p_wish_id;
+RETURN @sm;
+END$$
+DELIMITER ;
+
+
+USE `BucketList`;
+DROP procedure IF EXISTS `sp_GetAllWishes`;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetAllWishes`()
+BEGIN
+    select wish_id,wish_title,wish_description,wish_file_path,getSum(wish_id)
+    from tbl_wish where wish_private = 0;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` FUNCTION `hasLiked`(
+    p_wish int,
+    p_user int
+) RETURNS int(11)
+BEGIN
+     
+    select wish_like into @myval from tbl_likes where wish_id =  p_wish and user_id = p_user;
+RETURN @myval;
+END$$
+DELIMITER ;
+
+
