@@ -4,6 +4,7 @@
 
     <script src="static/scripts/jquery-1.8.3.min.js"></script>
     <script src="static/scripts/bootstrap-typeahead.js"></script>
+    <script src="static/scripts/underscore-min.js"></script>
 
     <script>
     $(document).ready(function($) {
@@ -13,11 +14,72 @@
             setTimeout(function () { that.hide() }, 250);
         };
 
+        var products = [
+            {
+                id: 0,
+                name: "Deluxe Bicycle",
+                price: 499.98,
+                imgurl: "https://developer.chrome.com/extensions/examples/api/pageAction/pageaction_by_url/icon-128.png"
+            },
+            {
+                id: 1,
+                name: "Super Deluxe Trampoline",
+                price: 134.99,
+                imgurl: "https://developer.chrome.com/extensions/examples/extensions/proxy_configuration/icon128.png"
+            },
+            {
+                id: 2,
+                name: "Super Duper Scooter",
+                price: 49.95,
+                imgurl: "https://raw.githubusercontent.com/JosephWoodward/SlugityDotNet/master/assets/logo_128x128.png"
+            }
+        ];
+
+        var that = this;
+
         $('#product_search').typeahead({
             source: function(query, process) {
-                return ["Deluxe Bicycle", "Super Deluxe Trampoline", "Super Duper Scooter"];
+                $('#product').hide();
+                var results = _.map(products, function(product) {
+                    return product.name;
+                });
+                process(results);
+            },
+
+            //matcher: function(item) {
+            //    return true;
+            //},
+
+            highlighter: function(name) {
+                var product = _.find(products, function(p) {
+                   return p.name == name;
+                });
+
+                html = '<div class="typeahead">';
+                html += '<div class="media"><a class="pull-left" href="#"><img src=' + product.imgurl + ' /></a>'
+                html += '<div class="media-body">';
+                html += '<p class="media-heading">' + product.name + ' (@' + product.price + ')' + '</p>';
+                html += '</div>';
+                html += '</div>';
+
+                //return product.name + " ($" + product.price + ")";
+                return html;
+            },
+
+            updater: function(name) {
+                var product = _.find(products, function(p) {
+                    return p.name == name;
+                });
+                that.setSelectedProduct(product);
+                return product.name;
             }
+
         });
+
+        $('#product').hide();
+        this.setSelectedProduct = function(product) {
+            $('#product').html("Purchase: <strong>" + product.name + " ($" + product.price + ")</strong>").show();
+        }
     })
     </script>
 </head>

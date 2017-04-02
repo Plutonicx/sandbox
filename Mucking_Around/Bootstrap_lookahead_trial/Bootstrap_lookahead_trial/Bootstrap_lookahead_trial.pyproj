@@ -46,6 +46,7 @@
     <Content Include="Bootstrap_lookahead_trial\static\scripts\bootstrap-typeahead.js" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\jquery-1.8.3.min.js" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\jquery-3.2.0.min.js" />
+    <Content Include="Bootstrap_lookahead_trial\static\scripts\underscore-min.js" />
     <Content Include="requirements.txt" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap.min.css" />
