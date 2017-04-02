@@ -7,6 +7,13 @@
     <script src="static/scripts/underscore-min.js"></script>
 
     <script>
+
+    var new_products = null;
+
+    function ajaxCallBack(product_obj) {
+        new_products = product_obj;
+    }
+
     $(document).ready(function($) {
         // Workaround for bug in mouse item selection
         $.fn.typeahead.Constructor.prototype.blur = function() {
@@ -14,33 +21,24 @@
             setTimeout(function () { that.hide() }, 250);
         };
 
-        var products = [
-            {
-                id: 0,
-                name: "Deluxe Bicycle",
-                price: 499.98,
-                imgurl: "https://developer.chrome.com/extensions/examples/api/pageAction/pageaction_by_url/icon-128.png"
-            },
-            {
-                id: 1,
-                name: "Super Deluxe Trampoline",
-                price: 134.99,
-                imgurl: "https://developer.chrome.com/extensions/examples/extensions/proxy_configuration/icon128.png"
-            },
-            {
-                id: 2,
-                name: "Super Duper Scooter",
-                price: 49.95,
-                imgurl: "https://raw.githubusercontent.com/JosephWoodward/SlugityDotNet/master/assets/logo_128x128.png"
-            }
-        ];
-
         var that = this;
 
         $('#product_search').typeahead({
             source: function(query, process) {
                 $('#product').hide();
-                var results = _.map(products, function(product) {
+
+                $(function () {
+                    $.ajax({
+                        url: '{{ url_for("typeAhead") }}',
+                        type: 'POST',
+                        success: function (result) {
+                            ajaxCallBack(JSON.parse(result));
+                            //console.log(result);
+                        }
+                    });
+                });
+
+                var results = _.map(new_products, function (product) {
                     return product.name;
                 });
                 process(results);
@@ -51,14 +49,14 @@
             //},
 
             highlighter: function(name) {
-                var product = _.find(products, function(p) {
+                var product = _.find(new_products, function (p) {
                    return p.name == name;
                 });
 
                 html = '<div class="typeahead">';
                 html += '<div class="media"><a class="pull-left" href="#"><img src=' + product.imgurl + ' /></a>'
                 html += '<div class="media-body">';
-                html += '<p class="media-heading">' + product.name + ' (@' + product.price + ')' + '</p>';
+                html += '<p class="media-heading">' + product.name + ' ($' + product.price + ')' + '</p>';
                 html += '</div>';
                 html += '</div>';
 
@@ -67,7 +65,7 @@
             },
 
             updater: function(name) {
-                var product = _.find(products, function(p) {
+                var product = _.find(new_products, function (p) {
                     return p.name == name;
                 });
                 that.setSelectedProduct(product);

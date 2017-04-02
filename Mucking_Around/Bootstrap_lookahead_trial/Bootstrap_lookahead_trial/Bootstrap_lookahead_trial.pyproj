@@ -36,6 +36,7 @@
     <Folder Include="Bootstrap_lookahead_trial\" />
     <Folder Include="Bootstrap_lookahead_trial\static\" />
     <Folder Include="Bootstrap_lookahead_trial\static\content\" />
+    <Folder Include="Bootstrap_lookahead_trial\static\content\Images\" />
     <Folder Include="Bootstrap_lookahead_trial\static\fonts\" />
     <Folder Include="Bootstrap_lookahead_trial\static\scripts\" />
     <Folder Include="Bootstrap_lookahead_trial\templates\" />
