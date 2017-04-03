@@ -44,9 +44,18 @@
   <ItemGroup>
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap-responsive.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap-responsive.min.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\font-awesome.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\font-awesome.min.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\Images\stars.svg" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\rating.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\rating.min.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\style.css" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\style.min.css" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\bootstrap-typeahead.js" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\jquery-1.8.3.min.js" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\jquery-3.2.0.min.js" />
+    <Content Include="Bootstrap_lookahead_trial\static\scripts\rating.js" />
+    <Content Include="Bootstrap_lookahead_trial\static\scripts\rating.min.js" />
     <Content Include="Bootstrap_lookahead_trial\static\scripts\underscore-min.js" />
     <Content Include="requirements.txt" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap.css" />
