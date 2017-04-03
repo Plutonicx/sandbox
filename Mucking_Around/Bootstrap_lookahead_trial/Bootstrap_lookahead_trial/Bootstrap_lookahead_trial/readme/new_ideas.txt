@@ -2,3 +2,6 @@
 2. for each row and button (with unqiue id for row and button) add an onclick function with passed in parameters.
 3. use button to create dynamic alert.
 4. create ajax call to server.
+
+example link can be found here:
+https://toddmotto.com/attaching-event-handlers-to-dynamically-created-javascript-elements/
