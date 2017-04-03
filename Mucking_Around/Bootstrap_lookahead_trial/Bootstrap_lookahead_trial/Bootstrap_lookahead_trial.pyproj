@@ -47,6 +47,7 @@
     <Content Include="Bootstrap_lookahead_trial\static\content\font-awesome.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\font-awesome.min.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\Images\stars.svg" />
+    <Content Include="Bootstrap_lookahead_trial\static\content\Images\star_med.png" />
     <Content Include="Bootstrap_lookahead_trial\static\content\rating.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\rating.min.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\style.css" />
