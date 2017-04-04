@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, json, url_for
+from flask import render_template, json, url_for, request
 from Bootstrap_lookahead_trial import app
 
 @app.route('/')
@@ -22,6 +22,13 @@ def typeAhead():
 
     return json.dumps(products)
 
+
+@app.route('/starClick',methods = ['POST'])
+def starClick():
+    _star_num = request.form['star_num']
+    _item_name = request.form['item_name']
+
+    return json.dumps({ "hello" : "world"})
 
 
 @app.route('/contact')

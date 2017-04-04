@@ -83,6 +83,7 @@
                     return p.name == name;
                 });
                 that.setSelectedProduct(product);
+                create_full_product(product.id, product.imgurl);
                 return product.name;
             }
 
@@ -143,28 +144,38 @@
 
 
     <div id="rating_stars_dynamic">
-        <span class="rating" id="rating_dynamic">
+        <!--<span class="rating" id="rating_dynamic">
 
-            </span>
+            </span>-->
     </div>
 
 
 
             <script>
 
-                function function1(num, el) {
-                    var span = document.getElementById("rating_dynamic");
+                function create_itemProduct(num, el) {
+                    var span = document.getElementById("rating_dynamic"+el);
                     var input = document.createElement("input");
                     input.setAttribute("type", "radio");
                     input.setAttribute("class", "rating-input");
-                    input.setAttribute("id", "rating-input-"+num+"-5_dynamic");
+                    input.setAttribute("id", "rating-input-"+el+num+"-5_dynamic");
                     input.setAttribute("name", "rating-input-"+el+"_dynamic");
                     input.onclick = function () {
-                        alert("hello world");
+                        $(function () {
+                            $.ajax({
+                                url: '{{ url_for("starClick") }}',
+                                type: 'POST',
+                                data: {star_num:num,item_name:el},
+                                success: function (result) {
+                                    JSON.parse(result);
+                                    //console.log(result);
+                                }
+                            });
+                        });
                     };
 
                     var label = document.createElement("label");
-                    label.setAttribute("for", "rating-input-"+num+"-5_dynamic");
+                    label.setAttribute("for", "rating-input-" + el + num + "-5_dynamic");
                     label.setAttribute("class", "rating-star");
 
                     span.appendChild(input);
@@ -172,16 +183,41 @@
                     //alert(input.id);
                 };
 
-                function1("1","1");
-                function1("2","1");
-                function1("3","1");
-                function1("4","1");
-                function1("5","1");
+                function create_full_product(el_name, imgUrl) {
+                    if (document.getElementById("rating_dynamic" + el_name) != null)
+                        return null;
+                    var div = document.getElementById("rating_stars_dynamic");
+                    var img = document.createElement("img");
+                    img.setAttribute("src", imgUrl);
+
+                    var span = document.createElement("span");
+                    span.setAttribute("class", "rating");
+                    span.setAttribute("id", "rating_dynamic"+el_name);
+
+                    div.appendChild(img);
+                    div.appendChild(span);
+
+                    create_itemProduct("5", el_name);
+                    create_itemProduct("4", el_name);
+                    create_itemProduct("3", el_name);
+                    create_itemProduct("2", el_name);
+                    create_itemProduct("1", el_name);
+
+                    div.appendChild(document.createElement("p"));
+                };
+
+                //create_full_product("1", "../static/content/images/icon-128.png");
+                //create_full_product("2", "../static/content/images/icon128.png");
+                //create_full_product("3", "../static/content/images/logo_128x128.png");
+
+                // "../static/content/images/icon-128.png"
+                
 
             </script>
 
-            <div id="rating_stars">
-                <span class="rating">
+            <!--<div id="rating_stars">
+                <img src="../static/content/images/icon-128.png" />
+                <span class="rating" style="vertical-align:middle">
                     <input type="radio" class="rating-input"
                            id="rating-input-1-5" name="rating-input-1">
                     <label for="rating-input-1-5" class="rating-star"></label>
@@ -198,7 +234,7 @@
                            id="rating-input-1-1" name="rating-input-1">
                     <label for="rating-input-1-1" class="rating-star"></label>
                 </span>
-            </div>
+            </div>-->
 
 </body>
 </html>
