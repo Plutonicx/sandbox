@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Bootstrap_lookahead_trial\" />
+    <Folder Include="Bootstrap_lookahead_trial\readme\" />
     <Folder Include="Bootstrap_lookahead_trial\static\" />
     <Folder Include="Bootstrap_lookahead_trial\static\content\" />
     <Folder Include="Bootstrap_lookahead_trial\static\content\Images\" />
@@ -42,6 +43,7 @@
     <Folder Include="Bootstrap_lookahead_trial\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Bootstrap_lookahead_trial\readme\new_ideas.txt" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap-responsive.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\bootstrap-responsive.min.css" />
     <Content Include="Bootstrap_lookahead_trial\static\content\font-awesome.css" />
