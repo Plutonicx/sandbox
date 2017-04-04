@@ -152,32 +152,35 @@
 
             <script>
 
-                function function1(num) {
+                function function1(num, el) {
                     var span = document.getElementById("rating_dynamic");
                     var input = document.createElement("input");
                     input.setAttribute("type", "radio");
                     input.setAttribute("class", "rating-input");
                     input.setAttribute("id", "rating-input-"+num+"-5_dynamic");
-                    input.setAttribute("name", "rating-input-" + num + "_dynamic");
+                    input.setAttribute("name", "rating-input-"+el+"_dynamic");
+                    input.onclick = function () {
+                        alert("hello world");
+                    };
 
                     var label = document.createElement("label");
-                    label.setAttribute("for", "rating-input-" + num + "-5_dynamic");
+                    label.setAttribute("for", "rating-input-"+num+"-5_dynamic");
                     label.setAttribute("class", "rating-star");
 
                     span.appendChild(input);
                     span.appendChild(label);
-                    alert(input.id);
+                    //alert(input.id);
                 };
 
-                function1("1");
-                function1("2");
-                function1("3");
-                function1("4");
-                function1("5");
+                function1("1","1");
+                function1("2","1");
+                function1("3","1");
+                function1("4","1");
+                function1("5","1");
 
             </script>
 
-            <!--<div id="rating_stars">
+            <div id="rating_stars">
                 <span class="rating">
                     <input type="radio" class="rating-input"
                            id="rating-input-1-5" name="rating-input-1">
@@ -195,7 +198,7 @@
                            id="rating-input-1-1" name="rating-input-1">
                     <label for="rating-input-1-1" class="rating-star"></label>
                 </span>
-            </div>-->
+            </div>
 
 </body>
 </html>
