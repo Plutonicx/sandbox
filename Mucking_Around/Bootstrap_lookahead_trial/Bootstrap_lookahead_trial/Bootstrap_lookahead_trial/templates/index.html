@@ -1,11 +1,13 @@
 <html>
 <head>
     <link href="static/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+          rel="stylesheet">
 
     <script src="static/scripts/jquery-1.8.3.min.js"></script>
     <script src="static/scripts/bootstrap-typeahead.js"></script>
     <script src="static/scripts/underscore-min.js"></script>
+    <script src="static/scripts/jquery-ui.js"></script>
 
     <script>
 
@@ -27,6 +29,21 @@
             alert("4!");
             // thid.id to get id of current element.
             // will post and redirect url as temporary solution.
+        });
+
+        $("#rating_stars_dynamic_list").sortable({
+            start: function (e, ui) {
+                // creates a temporary attribute on the element with the old index
+                $(this).attr('data-previndex', ui.item.index());
+            },
+            update: function (e, ui) {
+                // gets the new and old index then removes the temporary attribute
+                var newIndex = ui.item.index();
+                var oldIndex = $(this).attr('data-previndex');
+                $(this).removeAttr('data-previndex');
+                alert(oldIndex + "");
+                alert(newIndex + "");
+            }
         });
 
         // Workaround for bug in mouse item selection
@@ -143,7 +160,10 @@
     </div>
 
 
-    <div id="rating_stars_dynamic">
+    <div id="rating_stars_div">
+        <ul id="rating_stars_dynamic_list">
+
+        </ul>
         <!--<span class="rating" id="rating_dynamic">
 
             </span>-->
@@ -186,16 +206,22 @@
                 function create_full_product(el_name, imgUrl) {
                     if (document.getElementById("rating_dynamic" + el_name) != null)
                         return null;
-                    var div = document.getElementById("rating_stars_dynamic");
+                    var ul = document.getElementById("rating_stars_dynamic_list");
+                    var li = document.createElement("li");
+                    li.setAttribute("style", "list-style: none;");
+
                     var img = document.createElement("img");
                     img.setAttribute("src", imgUrl);
 
                     var span = document.createElement("span");
                     span.setAttribute("class", "rating");
-                    span.setAttribute("id", "rating_dynamic"+el_name);
+                    span.setAttribute("id", "rating_dynamic" + el_name);
+                    span.setAttribute("style", "vertical-align:middle;");
 
-                    div.appendChild(img);
-                    div.appendChild(span);
+                    li.appendChild(img);
+                    li.appendChild(span);
+
+                    ul.appendChild(li);
 
                     create_itemProduct("5", el_name);
                     create_itemProduct("4", el_name);
@@ -203,11 +229,11 @@
                     create_itemProduct("2", el_name);
                     create_itemProduct("1", el_name);
 
-                    div.appendChild(document.createElement("p"));
+                    //div.appendChild(document.createElement("p"));
                 };
 
                 //create_full_product("1", "../static/content/images/icon-128.png");
-                //create_full_product("2", "../static/content/images/icon128.png");
+                ///create_full_product("2", "../static/content/images/icon128.png");
                 //create_full_product("3", "../static/content/images/logo_128x128.png");
 
                 // "../static/content/images/icon-128.png"
