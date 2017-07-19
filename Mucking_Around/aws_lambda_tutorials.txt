@@ -1,0 +1,7 @@
+https://serverlesscode.com/post/deploy-scikitlearn-on-lamba/
+
+https://serverlesscode.com/post/scikitlearn-with-amazon-linux-container/
+
+https://ryan-cranfill.github.io/gensim-aws-lambda/
+
+https://medium.com/tooso/serving-tensorflow-predictions-with-python-and-aws-lambda-facb4ab87ddd

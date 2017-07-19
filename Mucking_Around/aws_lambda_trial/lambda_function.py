@@ -1,6 +1,8 @@
 import os
 import SampleModule as sm
 import distance
+import pickle
+import boto3
 
 def lambda_handler(event, context):
     word_1 = os.environ.get("word_1")
