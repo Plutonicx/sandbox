@@ -1,8 +1,6 @@
-import pandas as pd
 import os
-import distance
 import SampleModule as sm
-import numpy as np
+import distance
 
 def lambda_handler(event, context):
     word_1 = os.environ.get("word_1")
