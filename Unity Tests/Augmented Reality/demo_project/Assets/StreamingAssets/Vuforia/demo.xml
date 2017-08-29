@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="smiths" size="1.000000 1.394715" />
+    <ImageTarget name="cheesos" size="1.000000 1.471723" />
+    <ImageTarget name="m_and_ms" size="1.000000 0.393639" />
+    <ImageTarget name="raspberry_slurpee" size="1.000000 0.579610" />
+    <ImageTarget name="bueno" size="1.000000 0.361891" />
+    <ImageTarget name="aero" size="1.000000 0.357943" />
+    <ImageTarget name="cola_slurpee" size="1.000000 0.607484" />
+    <ImageTarget name="twirl_image_3" size="1.000000 0.910581" />
+    <ImageTarget name="dairy_milk_buscuits_stable" size="1.000000 0.622051" />
     <ImageTarget name="kitkat" size="1.000000 0.620376" />
-    <ImageTarget name="wine_front" size="1.000000 1.939724" />
     <ImageTarget name="Marker-00" size="1.000000 1.000000" />
   </Tracking>
 </QCARConfig>
