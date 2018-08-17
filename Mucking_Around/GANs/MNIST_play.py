@@ -35,7 +35,7 @@ model.evaluate(x_test, y_test)
 
 # Building a GAN
 from keras.layers import Input, LSTM, Dense, Conv2D, Conv2DTranspose, Reshape
-from keras.layers import BatchNormalization, Concatenate, LeakyReLU
+from keras.layers import BatchNormalization, Concatenate, LeakyReLU, Flatten, ReLU
 from keras.activations import relu, tanh, sigmoid
 from keras.models import Model
 
@@ -46,7 +46,7 @@ generator_length = 100
 gen_input = Input(
     shape=(generator_length,),
     dtype='float32',
-    name="generator_input"
+    name='main_input'
 )
 
 # layer 1
@@ -60,7 +60,9 @@ gen_layer_1 = Reshape(
 
 gen_layer_1 = BatchNormalization()(gen_layer_1)
 
-gen_layer_1 = relu(gen_layer_1)
+gen_layer_1 = ReLU()(gen_layer_1)
+
+
 
 # layer 2
 
@@ -73,7 +75,7 @@ gen_layer_2 = Conv2DTranspose(
 
 gen_layer_2 = BatchNormalization()(gen_layer_2)
 
-gen_layer_2 = relu(gen_layer_2)
+gen_layer_2 = ReLU()(gen_layer_2)
 
 # layer 3
 
@@ -86,18 +88,20 @@ gen_layer_3 = Conv2DTranspose(
 
 gen_layer_3 = BatchNormalization()(gen_layer_3)
 
-gen_layer_3 = relu(gen_layer_3)
+gen_layer_3 = ReLU()(gen_layer_3)
+
 
 # layer 4
 
 gen_final = Conv2DTranspose(
     filters = 1,
     kernel_size=5,
-    strides=(2,2,),
-    padding="same"
+    strides=(1,1,),
+    padding="same",
+    activation="tanh"
 )(gen_layer_3)
 
-gen_final = tanh(gen_final)
+#gen_final = tanh(gen_final)
 
 gen_final = Reshape(
     target_shape=(28,28,1,)
@@ -110,7 +114,7 @@ main_input = Input(
     name='main_input'
 )
 
-disc_input = Concatenate(axis=-1)([
+disc_input = Concatenate()([
     main_input,
     gen_final
 ])
@@ -148,10 +152,20 @@ main_disc = discriminator(main_input)
 
 
 model = Model(
-    inputs=[gen_input],
-    outputs=[generator_discriminator]
+    inputs=[gen_input, main_input],
+    outputs=[generator_discriminator, combined_discriminator]
 )
 
+# loss functions and outputs..
+
+# for the combined discriminator the output needs to be
+# gen_discriminator - output = 1
+# combined_discriminator - output = 1*(1 - smooth) for smoothing parameter ~ 0.1,
+# when input is from the actual dataset, and 0 when the data is from the generated
+# dataset.
+
+# For all cases the loss is cross entropy and can try & use equal weights for
+# the outputs. 
 
 
 
