@@ -80,6 +80,7 @@ generator.add(Activation('sigmoid'))
 # build discriminator model
 disc_model = Sequential()
 disc_model.add(discriminator)
+discriminator.trainable = True
 disc_model.compile(
     loss='binary_crossentropy',
     optimizer=RMSprop(lr=0.0002, decay=6e-8),
@@ -89,6 +90,7 @@ disc_model.compile(
 # build adveserial model
 adv_model = Sequential()
 adv_model.add(generator)
+discriminator.trainable = False
 adv_model.add(discriminator)
 adv_model.compile(
     loss='binary_crossentropy',
@@ -96,6 +98,12 @@ adv_model.compile(
     metrics=['accuracy']
 )
 
+
+generator.summary()
+discriminator.summary()
+
+disc_model.summary()
+adv_model.summary()
 
 # visualise models
 #SVG(model_to_dot(discriminator).create(prog='dot', format='svg'))
@@ -140,7 +148,7 @@ def plot_images(generator, save2file=False, fake=True, samples=16, gen_input=Non
 
 
 # train params
-train_steps = 5000
+train_steps = 1000
 batch_size = 512
 smooth = 0.0
 
@@ -166,11 +174,14 @@ for i in range(train_steps):
     y = np.ones([2*batch_size, 1])*(1-smooth)
 
     y[batch_size:, :] = 0
+    discriminator.trainable = True
     disc_loss = disc_model.train_on_batch(x, y)
 
     # build dataset and do grad-descent on the adveserial model
     y = np.ones([batch_size, 1])
     gen_input = np.random.uniform(-1, 1, size=[batch_size, 100])
+    # freeze the discriminator here and only train the generator.
+    discriminator.trainable = False
     adv_loss = adv_model.train_on_batch(gen_input, y)
 
     disc_records.append({
@@ -211,19 +222,19 @@ data = [
     go.Scatter(
         x = disc_df.index,
         y = disc_df['acc'].rolling(window=20).mean(),
-        name = 'Discriminator Accuracy Rolling Mean'
+        name = 'Discriminator Loss Rolling Mean'
     ),
     go.Scatter(
         x = adv_df.index,
         y = adv_df['acc'].rolling(window=20).mean(),
-        name = 'Adveserial Accuracy Rolling Mean'
+        name = 'Adveserial Loss Rolling Mean'
     )
 ]
 
 layout = go.Layout(
-    title = 'GAN Accuracies',
+    title = 'GAN Losses',
     xaxis = dict(title = 'Batch Num'),
-    yaxis = dict(title = 'Accuracy')
+    yaxis = dict(title = 'Loss')
 )
 
 fig = go.FigureWidget(data = data, layout = layout)
