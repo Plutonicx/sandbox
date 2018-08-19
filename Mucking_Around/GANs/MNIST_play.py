@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import pydot
 
 # making sure libraries work.
 image = cv2.imread("clouds.jpg")
@@ -37,7 +38,7 @@ model.evaluate(x_test, y_test)
 from keras.layers import Input, LSTM, Dense, Conv2D, Conv2DTranspose, Reshape
 from keras.layers import BatchNormalization, Concatenate, LeakyReLU, Flatten, ReLU
 from keras.activations import relu, tanh, sigmoid
-from keras.models import Model
+from keras.models import Model, Sequential
 
 # start with the generator.
 
@@ -46,7 +47,7 @@ generator_length = 100
 gen_input = Input(
     shape=(generator_length,),
     dtype='float32',
-    name='main_input'
+    name='gen_input'
 )
 
 # layer 1
@@ -114,46 +115,69 @@ main_input = Input(
     name='main_input'
 )
 
-disc_input = Concatenate()([
+disc_merge = Concatenate(axis=0)([
     main_input,
     gen_final
 ])
 
 
-def discriminator(input):
 
-    main_layer_1 = Conv2D(
-        filters=64,
-        kernel_size=(3,3,)
-    )(input)
+disc_input = Input(
+    shape=(28,28,1,),
+    dtype='float32',
+    name='main_input'
+)
 
-    main_layer_1 = BatchNormalization()(main_layer_1)
-    main_layer_1 = LeakyReLU(alpha=0.2)(main_layer_1)
+shared_layer = Conv2D(
+    filters=64,
+    kernel_size=(3,3,),
+    name='conv_layer_1'
+)
 
-    main_layer_2 = Conv2D(
-        filters=128,
-        kernel_size=(3,3,)
-    )(main_layer_1)
+main_layer_1_a = shared_layer(disc_merge)
+main_layer_1_b = shared_layer(gen_final)
 
-    main_layer_2 = BatchNormalization()(main_layer_2)
-    main_layer_2 = LeakyReLU(alpha=0.2)(main_layer_2)
+shared_norm = BatchNormalization(name='batch_layer_1')
 
+main_layer_1_a = shared_norm(main_layer_1_a)
+main_layer_1_b = shared_norm(main_layer_1_b)
 
-    main_layer_3 = Reshape(target_shape=(24*24*128,))(main_layer_2)
+shared_leak = LeakyReLU(alpha=0.2, name='lrelu_layer_1')
 
-    decision = Dense(10, activation='sigmoid')(main_layer_3)
+main_layer_1_a = shared_leak(main_layer_1_a)
+main_layer_1_b = shared_leak(main_layer_1_b)
 
-    return decision
+shared_conv = Conv2D(
+    filters=128,
+    kernel_size=(3,3,)
+)
 
-combined_discriminator = discriminator(disc_input)
-generator_discriminator = discriminator(gen_final)
+main_layer_2_a = shared_conv(main_layer_1_a)
+main_layer_2_b = shared_conv(main_layer_1_b)
 
-main_disc = discriminator(main_input)
+shared_batch_2 = BatchNormalization()
+
+main_layer_2_a = shared_batch_2(main_layer_2_a)
+main_layer_2_b = shared_batch_2(main_layer_2_b)
+
+shared_leak_2 = LeakyReLU(alpha=0.2)
+
+main_layer_2_a = shared_leak_2(main_layer_2_a)
+main_layer_2_b = shared_leak_2(main_layer_2_b)
+
+main_layer_3_a = Reshape(target_shape=(24*24*128,))(main_layer_2_a)
+main_layer_3_b = Reshape(target_shape=(24*24*128,))(main_layer_2_b)
+
+shared_dense = Dense(10, activation='sigmoid')
+
+discriminator_a = shared_dense(main_layer_3_a)
+discriminator_b = shared_dense(main_layer_3_b)
+
 
 
 model = Model(
     inputs=[gen_input, main_input],
-    outputs=[generator_discriminator, combined_discriminator]
+    outputs=[discriminator_a,discriminator_b]
 )
 
 # loss functions and outputs..
@@ -165,8 +189,34 @@ model = Model(
 # dataset.
 
 # For all cases the loss is cross entropy and can try & use equal weights for
-# the outputs. 
+# the outputs.
 
+smooth = 0.1
+
+generator_input = [
+    np.random.normal(0,1,generator_length)
+    for x in range(len(x_train))
+]
+
+generator_output = [1 for x in range(len(x_train))]
+
+discriminator_output = [
+    1 - smooth for x in range(len(x_train))
+] + [
+    0 for x in range(len(x_train))
+]
+
+
+# train the model.
+
+from IPython.display import SVG
+from keras.utils.vis_utils import model_to_dot
+
+SVG(model_to_dot(model).create(prog='dot', format='svg'))
+
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
 
 
 
