@@ -1,0 +1,5 @@
+{
+  "azureFunctions.projectLanguage": "Batch",
+  "azureFunctions.projectRuntime": "~1",
+  "azureFunctions.templateFilter": "Verified"
+}

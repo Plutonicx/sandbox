@@ -1,0 +1,17 @@
+{
+  "name": "test-function",
+  "version": "1.0.0",
+  "description": "Azure Functions sample for the Serverless framework",
+  "main": "handler.js",
+  "keywords": [
+    "azure",
+    "serverless"
+  ],
+  "devDependencies": {
+    "serverless-azure-functions": "*",
+    "serverless-python-requirements": "^4.0.3"
+  },
+  "dependencies": {
+    "pandas-js": "^0.2.4"
+  }
+}
